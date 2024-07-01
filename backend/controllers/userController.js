@@ -3,7 +3,6 @@ import { Op } from 'sequelize';
 
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
-import { sendPasswordResetEmail } from '../utils/sendEmail.js';
 
 
 /**
@@ -236,32 +235,6 @@ const updateUser = asyncHandler(async (req, res) => {
 	}
   });
   
-
-/**
- * @desc    Forgot password
- * @route   POST /api/users/forgot-password
- * @access  public
- */
-const forgotPassword = asyncHandler(async (req, res) => {
-	const { email } = req.body;
-  
-	const user = await User.findOne({ where: { email } });
-  
-	if (!user) {
-	  res.status(404);
-	  throw new Error('User not found');
-	}
-  
-	const defaultPassword = 'Hodari@123';
-  
-	user.password = defaultPassword;
-	await user.save();  
-	
-	sendPasswordResetEmail(email, defaultPassword);
-  
-	res.status(200).json({ message: 'Password reset email sent successfully' });
-  });
-    
   
 export {
 	authUser,
@@ -272,5 +245,4 @@ export {
 	deleteUser,
 	getUserByID,
 	updateUser,
-	forgotPassword,
 };
