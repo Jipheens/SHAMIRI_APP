@@ -14,16 +14,16 @@ export const renderBottomNav = () => {
         <Text style={styles.iconText}>Home</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
-        <Ionicons name="cart-outline" size={24} color="black" />
-        <Text style={styles.iconText}>Cart</Text>
+        <Ionicons name="list-outline" size={24} color="black" />
+        <Text style={styles.iconText}>Categories</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-        <MaterialIcons name="delivery-dining" size={24} color="black" />
-        <Text style={styles.iconText}>Orders</Text>
+        <MaterialIcons name="add-box" size={24} color="black" />
+        <Text style={styles.iconText}>New</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Account")}>
         <AntDesign name="profile" size={24} color="black" />
-        <Text style={styles.iconText}>Account</Text>
+        <Text style={styles.iconText}>Settings</Text>
       </TouchableOpacity>
     </View>
   );
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 0,
     borderWidth: 2,
-    borderColor: "#12D18E",
-    borderRadius: 30,
+    borderColor: "#195AE6",
+    borderRadius: 0,
     backgroundColor: "#fff",
     elevation: 15,
     paddingHorizontal: 20,

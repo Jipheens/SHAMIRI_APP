@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   trackOrderButton: {
-    backgroundColor: '#12D18E',
+    backgroundColor: '#195AE6',
     padding: 12,
     borderRadius: 8,
     marginTop: 8,

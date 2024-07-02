@@ -152,7 +152,7 @@ const Login = () => {
       width: 40,
       height: 40,
       borderRadius: 20, 
-      backgroundColor: "#12D18E",
+      backgroundColor: "#195AE6",
       justifyContent: "center",
       alignItems: "center",
       marginRight: 10,
@@ -182,7 +182,7 @@ const Login = () => {
     },
     input: {
       borderBottomWidth: 2,
-      borderBottomColor: "#12D18E",
+      borderBottomColor: "#195AE6",
       fontWeight: "bold",
     },
     passwordContainer: {
@@ -190,7 +190,7 @@ const Login = () => {
       alignItems: "center",
       justifyContent: "space-between",
       borderBottomWidth: 0,
-      borderBottomColor: "#12D18E",
+      borderBottomColor: "#195AE6",
       fontWeight: "bold",
     },
     passwordInput: {
@@ -201,7 +201,7 @@ const Login = () => {
     },
     passwordToggleText: {
       fontSize: 20,
-      color: "#12D18E",
+      color: "#195AE6",
       fontWeight: "bold",
     },
     bottomLinksContainer: {

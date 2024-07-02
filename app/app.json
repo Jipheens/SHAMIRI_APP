@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/splash.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.alex.karuiru.eats"
+      "package": "com.alex.karuiru.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

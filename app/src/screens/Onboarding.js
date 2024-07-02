@@ -17,10 +17,10 @@ const Onboarding = () => {
     
   return (
     <View style={styles.onboarding}>
-        <Text style={styles.logo}>{`HALISI`}</Text>       
+        <Text style={styles.logo}>{`JOURNAL`}</Text>       
         <Text style={styles.halisiEats}>
-            <Text style={styles.halisi}>{`Halisi  `}</Text>
-            <Text style={styles.eats}>Eats</Text>
+            <Text style={styles.halisi}>{`WSJ  `}</Text>
+            <Text style={styles.eats}>Today</Text>
         </Text>      
       <Image
         style={styles.onboardingIcon}
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
       fontSize: 30,
     },
     eats: {
-      color: "#12D18E",
+      color: "#195AE6",
     },
     halisiEats: {
       top: 170,

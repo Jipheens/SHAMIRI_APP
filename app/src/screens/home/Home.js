@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   viewAllText: {
-    color: '#12D18E',
+    color: '#195AE6',
     fontWeight: 'bold',
   },
 });
