@@ -1,0 +1,1 @@
+export const backendUrl = 'https://debd-197-237-246-123.ngrok-free.app';
