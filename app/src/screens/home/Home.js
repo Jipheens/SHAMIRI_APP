@@ -1,29 +1,34 @@
-import React from 'react';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 
 import { renderBanner } from '../../components/Bannner';
 import { renderBottomNav } from '../../components/BottomNav';
+import { AuthContext } from '../../AuthContext';
+import { backendUrl } from '../../../config/config';
 
 const Home = () => {
-  const topRestaurantsData = [
-    { id: 1, name: 'Restaurant 1', image: require('../../images/restaurant.jpg') },
-    { id: 2, name: 'Restaurant 2', image: require('../../images/restaurant.jpg') },
-    { id: 3, name: 'Restaurant 3', image: require('../../images/restaurant.jpg') },
-    { id: 4, name: 'Restaurant 4', image: require('../../images/restaurant.jpg') },
-    { id: 5, name: 'Restaurant 5', image: require('../../images/restaurant.jpg') },
-    // Add more restaurant data as needed
-  ];
+  const { user } = useContext(AuthContext);
+  const [journalEntries, setJournalEntries] = useState([]);
 
-  const topDishesData = [
-    { id: 1, name: 'Dish 1', image: require('../../images/dish.png') },
-    { id: 2, name: 'Dish 2', image: require('../../images/dish.png') },
-    { id: 3, name: 'Dish 3', image: require('../../images/dish.png') },
-    { id: 4, name: 'Dish 4', image: require('../../images/dish.png') },
-    { id: 5, name: 'Dish 5', image: require('../../images/dish.png') },
-    { id: 6, name: 'Dish 6', image: require('../../images/dish.png') },
-    // Add more dish data as needed
-  ];
+  const fetchData = async () => {
+    try {
+      const token = user.token;
+      const response = await axios.get(`${backendUrl}/api/journalEntries`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setJournalEntries(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -32,41 +37,24 @@ const Home = () => {
         {/* Search Bar */}
         <View style={styles.searchBar}>
           <Ionicons name="ios-search-circle-sharp" size={24} color="black" />
-          <Text style={styles.searchBarText}>Restaurants,  Dishes</Text>
+          <Text style={styles.searchBarText}>Search Journal Entries</Text>
         </View>
 
-        {/* Top Restaurants */}
+        {/* Journal Entries */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Top Restaurants</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {topRestaurantsData.map((restaurant) => (
-              <TouchableOpacity key={restaurant.id} style={styles.card}>
-                <Image source={restaurant.image} style={styles.cardImage} />
-                <Text>{restaurant.name}</Text>
-                {/* Add more restaurant details or components */}
+          <Text style={styles.sectionTitle}>Your Journal Entries</Text>
+          <ScrollView>
+            {journalEntries.map((entry) => (
+              <TouchableOpacity key={entry.id} style={styles.card}>
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{entry.title}</Text>
+                  <Text style={styles.cardCategory}>{entry.category}</Text>
+                  <Text style={styles.cardDate}>{new Date(entry.date).toLocaleDateString()}</Text>
+                  <Text numberOfLines={3}>{entry.content}</Text>
+                </View>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <TouchableOpacity style={styles.viewAllButton}>
-            <Text style={styles.viewAllText}>View All</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Top Dishes */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Top Dishes</Text>
-          <ScrollView horizontal showsVerticalScrollIndicator={false}>
-            {topDishesData.map((dish) => (
-              <TouchableOpacity key={dish.id} style={styles.card}>
-                <Image source={dish.image} style={styles.cardImage} />
-                <Text>{dish.name}</Text>
-                {/* Add more dish details or components */}
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          <TouchableOpacity style={styles.viewAllButton}>
-            <Text style={styles.viewAllText}>View All</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
       {renderBottomNav()}
@@ -103,19 +91,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   card: {
-    width: 150,
-    height: 200,
     backgroundColor: '#e0e0e0',
-    marginRight: 10,
+    marginBottom: 10,
     padding: 10,
     borderRadius: 8,
-    overflow: 'hidden', // Ensure image stays within the borders
   },
-  cardImage: {
-    width: '100%',
-    height: '80%',
-    borderRadius: 8,
-    marginBottom: 8,
+  cardContent: {
+    padding: 10,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  cardCategory: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    marginBottom: 5,
+  },
+  cardDate: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 5,
   },
   viewAllButton: {
     marginTop: 10,
