@@ -8,8 +8,8 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import OTP from './screens/OTP';
 import Home from './screens/home/Home';
-import Cart from './screens/Cart';
-import Orders from './screens/Orders';
+import MyJournals from './screens/myjournals/MyJournals';
+import Discover from './screens/discover/Discover';
 import Account from './screens/account/Account';
 import Notifications from './screens/notification/Notifications';
 
@@ -43,8 +43,8 @@ const Navigator = () => {
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="OTP" component={OTP} />
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Cart" component={Cart} />
-            <Stack.Screen name="Orders" component={Orders} />
+            <Stack.Screen name="MyJournals" component={MyJournals} />
+            <Stack.Screen name="Discover" component={Discover} />
             <Stack.Screen name="Account" component={Account} />
             <Stack.Screen name="Notifications" component={Notifications} />
 

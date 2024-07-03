@@ -13,13 +13,13 @@ export const renderBottomNav = () => {
         <Ionicons name="home-outline" size={24} color="black" />
         <Text style={styles.iconText}>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+      <TouchableOpacity onPress={() => navigation.navigate("MyJournals")}>
         <Ionicons name="list-outline" size={24} color="black" />
-        <Text style={styles.iconText}>Categories</Text>
+        <Text style={styles.iconText}>My Journals</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-        <MaterialIcons name="add-box" size={24} color="black" />
-        <Text style={styles.iconText}>New</Text>
+        <MaterialIcons name="explore" size={24} color="black" />
+        <Text style={styles.iconText}>Discover</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Account")}>
         <AntDesign name="profile" size={24} color="black" />

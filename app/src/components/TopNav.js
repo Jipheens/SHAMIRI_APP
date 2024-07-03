@@ -9,7 +9,7 @@ export const renderTopNav = () => {
     return (
       <View style={styles.banner}>
         <View style={styles.bannerImages}>
-        <Ionicons name="fast-food-outline" size={40} color="white" />
+        <Ionicons name="bookmarks" size={40} color="white" />
           <View style={styles.notificationsContainer}>
             <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
             <Ionicons name="notifications-circle-outline" size={50} color="white"  />

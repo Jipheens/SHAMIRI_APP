@@ -42,7 +42,7 @@ const Home = () => {
 
         {/* Journal Entries */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Your Journal Entries</Text>
+          <Text style={styles.sectionTitle}>Top Journal Entries</Text>
           <ScrollView>
             {journalEntries.map((entry) => (
               <TouchableOpacity key={entry.id} style={styles.card}>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity,} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
 import { Ionicons  } from '@expo/vector-icons';
 
 export const renderBanner = () => {
@@ -9,7 +8,7 @@ export const renderBanner = () => {
     return (
       <View style={styles.banner}>
         <View style={styles.bannerImages}>
-        <Ionicons name="fast-food-outline" size={40} color="white" />
+        <Ionicons name="bookmarks-outline" size={40} color="white" />
           <View style={styles.notificationsContainer}>
             <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
             <Ionicons name="notifications-circle-outline" size={50} color="white"  />
