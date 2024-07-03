@@ -4,6 +4,7 @@ import express from 'express';
 
 import connectDB from './config/db.js';
 import { errorHandler, notFound } from './middlewares/errorMiddleware.js';
+import journalRoutes from './routes/journalRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/journalEntries', journalRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
