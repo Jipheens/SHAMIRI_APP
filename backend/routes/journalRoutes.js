@@ -13,7 +13,7 @@ import { protect } from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 router.route('/').post(protect, createJournalEntry)
-router.route('/') .get(protect, getJournalEntries);
+router.route('/') .get(getJournalEntries);
 router.route('/myjournals/:userId').get(protect, getJournalEntriesByUserId);
 router.route('/:id').get(protect, getJournalEntryById)
 router.route('/:id').put(protect, updateJournalEntry)

@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler';
+import { Op } from 'sequelize';
 
 import JournalEntry from '../models/journalEntryModel.js';
 
@@ -6,7 +7,7 @@ import JournalEntry from '../models/journalEntryModel.js';
 /**
  * @desc    Create a new journal entry
  * @route   POST /api/journalEntries
- * @access  Private
+ * @access  private
  */
 const createJournalEntry = asyncHandler(async (req, res) => {
   const { title, content, category, date } = req.body;
@@ -26,11 +27,23 @@ const createJournalEntry = asyncHandler(async (req, res) => {
 /**
  * @desc    Get all journal entries for a user
  * @route   GET /api/journalEntries
- * @access  Private
+ * @access  public
  */
 const getJournalEntries = asyncHandler(async (req, res) => {
+  const { search } = req.query;
+  let whereCondition = {};
+
+  if (search) {
+    whereCondition = {
+      [Op.or]: [
+        { title: { [Op.like]: `%${search}%` } },
+        { category: { [Op.like]: `%${search}%` } },
+      ],
+    };
+  }
+
   const journalEntries = await JournalEntry.findAll({
-    where: { userId: req.user.id },
+    where: whereCondition,
     order: [['date', 'DESC']],
   });
 
@@ -41,7 +54,7 @@ const getJournalEntries = asyncHandler(async (req, res) => {
 /**
  * @desc    Get journal entries for a specific user by user ID
  * @route   GET /api/journalEntries/myjournals/:userId
- * @access  Private/Admin
+ * @access  private
  */
 const getJournalEntriesByUserId = asyncHandler(async (req, res) => {
     const { userId } = req.params;
@@ -62,7 +75,7 @@ const getJournalEntriesByUserId = asyncHandler(async (req, res) => {
 /**
  * @desc    Get a single journal entry by ID
  * @route   GET /api/journalEntries/:id
- * @access  Private
+ * @access  private
  */
 const getJournalEntryById = asyncHandler(async (req, res) => {
   const journalEntry = await JournalEntry.findByPk(req.params.id);
@@ -78,7 +91,7 @@ const getJournalEntryById = asyncHandler(async (req, res) => {
 /**
  * @desc    Update a journal entry
  * @route   PUT /api/journalEntries/:id
- * @access  Private
+ * @access  private
  */
 const updateJournalEntry = asyncHandler(async (req, res) => {
   const { title, content, category, date } = req.body;
@@ -103,7 +116,7 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
 /**
  * @desc    Delete a journal entry
  * @route   DELETE /api/journalEntries/:id
- * @access  Private
+ * @access  private
  */
 const deleteJournalEntry = asyncHandler(async (req, res) => {
   const journalEntry = await JournalEntry.findByPk(req.params.id);

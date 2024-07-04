@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 
@@ -11,7 +11,7 @@ import { backendUrl } from '../../../config/config';
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [journalEntries, setJournalEntries] = useState([]);
-  console.log('User', user);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchData = async () => {
     try {
@@ -31,6 +31,11 @@ const Home = () => {
     fetchData();
   }, []);
 
+  const filteredEntries = journalEntries.filter(entry =>
+    entry.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    entry.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {renderTopNav()}
@@ -38,14 +43,19 @@ const Home = () => {
         {/* Search Bar */}
         <View style={styles.searchBar}>
           <Ionicons name="search-circle-sharp" size={24} color="black" />
-          <Text style={styles.searchBarText}>Search Journal Entries</Text>
+          <TextInput
+            style={styles.searchBarText}
+            placeholder="Search Journal Entries"
+            onChangeText={text => setSearchQuery(text)}
+            value={searchQuery}
+          />
         </View>
 
         {/* Journal Entries */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Top Journal Entries</Text>
           <ScrollView>
-            {journalEntries.map((entry) => (
+            {filteredEntries.map((entry) => (
               <TouchableOpacity key={entry.id} style={styles.card}>
                 <View style={styles.cardContent}>
                   <Text style={styles.cardTitle}>{entry.title}</Text>
@@ -82,6 +92,7 @@ const styles = StyleSheet.create({
   searchBarText: {
     color: '#11273F',
     marginLeft: 10,
+    flex: 1,
   },
   sectionContainer: {
     padding: 10,
