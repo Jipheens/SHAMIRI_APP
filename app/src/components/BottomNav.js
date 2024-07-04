@@ -17,8 +17,8 @@ export const renderBottomNav = () => {
         <Ionicons name="list-outline" size={24} color="black" />
         <Text style={styles.iconText}>My Journals</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-        <MaterialIcons name="explore" size={24} color="black" />
+      <TouchableOpacity onPress={() => navigation.navigate("Discover")}>
+        <MaterialIcons name="travel-explore" size={24} color="black" />
         <Text style={styles.iconText}>Discover</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Account")}>

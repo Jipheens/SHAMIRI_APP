@@ -57,13 +57,17 @@ const Account = () => {
         return;
       }
 
-      const response = await axios.put(`${backendUrl}/api/users/profile`, {
+      const updateUser = {
         id: user.id,
         name,
         phone,
         email,
         password,
-      });
+      };
+
+      console.log('Updating user with:', updateUser);
+
+      const response = await axios.put(`${backendUrl}/api/users/profile`, updateUser);
 
       const updatedUser = response.data;
       await AsyncStorage.setItem('@user', JSON.stringify(updatedUser));
@@ -86,9 +90,9 @@ const Account = () => {
   };
 
   return (
-    <ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
       {renderTopNav()}
-      <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.circleButtonContainer}>
             <TouchableOpacity onPress={() => navigation.navigate('Onboarding')}>
@@ -166,17 +170,16 @@ const Account = () => {
             </TouchableOpacity>
           </View>
         </View>
-        {renderBottomNav()}
-      </SafeAreaView>
-    </ScrollView>
+      </ScrollView>
+      {renderBottomNav()}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 24,
     alignItems: 'center',
+    paddingVertical: 24,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -249,3 +252,4 @@ const styles = StyleSheet.create({
 });
 
 export default Account;
+

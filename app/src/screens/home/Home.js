@@ -3,7 +3,7 @@ import { View, ScrollView, Text, TouchableOpacity, StyleSheet, SafeAreaView } fr
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 
-import { renderBanner } from '../../components/Bannner';
+import { renderTopNav } from '../../components/TopNav';
 import { renderBottomNav } from '../../components/BottomNav';
 import { AuthContext } from '../../AuthContext';
 import { backendUrl } from '../../../config/config';
@@ -11,6 +11,7 @@ import { backendUrl } from '../../../config/config';
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [journalEntries, setJournalEntries] = useState([]);
+  console.log('User', user);
 
   const fetchData = async () => {
     try {
@@ -32,11 +33,11 @@ const Home = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {renderBanner()}
+      {renderTopNav()}
       <ScrollView>
         {/* Search Bar */}
         <View style={styles.searchBar}>
-          <Ionicons name="ios-search-circle-sharp" size={24} color="black" />
+          <Ionicons name="search-circle-sharp" size={24} color="black" />
           <Text style={styles.searchBarText}>Search Journal Entries</Text>
         </View>
 
