@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -8,19 +8,22 @@ import {
   SafeAreaView,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import { ChevronLeftIcon } from 'react-native-heroicons/outline';
+import { UserIcon } from 'react-native-heroicons/outline';
 
 import { renderTopNav } from '../../components/TopNav';
 import { renderBottomNav } from '../../components/BottomNav';
+import { AuthContext } from '../../AuthContext';
 import { backendUrl } from '../../../config/config';
 
 const Account = () => {
   const navigation = useNavigation();
-  const [user, setUser] = useState({});
+  const { user } = useContext(AuthContext);
+  const [userData, setUserData] = useState({});
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -28,6 +31,7 @@ const Account = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,7 +39,7 @@ const Account = () => {
         const userData = await AsyncStorage.getItem('@user');
         if (userData) {
           const user = JSON.parse(userData);
-          setUser(user);
+          setUserData(user);
           setName(user.name);
           setPhone(user.phone);
           setEmail(user.email);
@@ -65,14 +69,18 @@ const Account = () => {
         password,
       };
 
-      console.log('Updating user with:', updateUser);
-
-      const response = await axios.put(`${backendUrl}/api/users/profile`, updateUser);
+      const response = await axios.put(`${backendUrl}/api/users/profile`, updateUser, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
 
       const updatedUser = response.data;
       await AsyncStorage.setItem('@user', JSON.stringify(updatedUser));
+      setUserData(updatedUser);
       setLoading(false);
       setMessage('Profile updated successfully');
+      setModalVisible(false);
     } catch (error) {
       setLoading(false);
       setMessage('Update failed. Please try again.');
@@ -95,83 +103,110 @@ const Account = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.circleButtonContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('Onboarding')}>
-              <ChevronLeftIcon size={30} color="#FFF" />
+            <TouchableOpacity >
+              <UserIcon size={30} color="#FFF" />
             </TouchableOpacity>
           </View>
         </View>
 
         {message && <Text style={styles.message}>{message}</Text>}
-        <View style={styles.formContainer}>
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Full name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your name"
-              value={name}
-              onChangeText={(text) => setName(text)}
-            />
-          </View>
-
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Phone number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your phone number"
-              value={phone}
-              onChangeText={(text) => setPhone(text)}
-              keyboardType="phone-pad"
-            />
-          </View>
-
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email"
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              keyboardType="email-address"
-            />
-          </View>
-
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your password"
-              secureTextEntry
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-            />
-          </View>
-
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Confirm Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm your password"
-              secureTextEntry
-              value={confirmPassword}
-              onChangeText={(text) => setConfirmPassword(text)}
-            />
-          </View>
-
-          <View style={styles.bottomContainer}>
-            {loading ? (
-              <ActivityIndicator size="large" color="#195AE6" />
-            ) : (
-              <TouchableOpacity style={styles.btn} onPress={handleUpdate} disabled={loading}>
-                <Text style={styles.text}>Update</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={[styles.btn, styles.logoutBtn]} onPress={handleLogout}>
-              <Text style={[styles.text, styles.logoutText]}>Logout</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.label}>Full name:</Text>
+          <Text style={styles.detailText}>{userData.name}</Text>
+          <Text style={styles.label}>Phone number:</Text>
+          <Text style={styles.detailText}>{userData.phone}</Text>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.detailText}>{userData.email}</Text>
         </View>
+
+        <TouchableOpacity style={styles.btn} onPress={() => setModalVisible(true)}>
+          <Text style={styles.text}>Update</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.btn, styles.logoutBtn]} onPress={handleLogout}>
+          <Text style={[styles.text, styles.logoutText]}>Logout</Text>
+        </TouchableOpacity>
       </ScrollView>
       {renderBottomNav()}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Update Profile</Text>
+            <View style={styles.formContainer}>
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Full name</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your name"
+                  value={name}
+                  onChangeText={(text) => setName(text)}
+                />
+              </View>
+
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Phone number</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your phone number"
+                  value={phone}
+                  onChangeText={(text) => setPhone(text)}
+                  keyboardType="phone-pad"
+                />
+              </View>
+
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={(text) => setEmail(text)}
+                  keyboardType="email-address"
+                />
+              </View>
+
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Password</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your password"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                />
+              </View>
+
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Confirm Password</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm your password"
+                  secureTextEntry
+                  value={confirmPassword}
+                  onChangeText={(text) => setConfirmPassword(text)}
+                />
+              </View>
+
+              {loading ? (
+                <ActivityIndicator size="large" color="#195AE6" />
+              ) : (
+                <TouchableOpacity style={styles.btn} onPress={handleUpdate}>
+                  <Text style={styles.text}>Save</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={[styles.btn, styles.cancelBtn]} onPress={() => setModalVisible(false)}>
+                <Text style={styles.text}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -191,17 +226,15 @@ const styles = StyleSheet.create({
   circleButtonContainer: {
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: '#195AE6',
+    borderRadius: 15,
+    backgroundColor: '#11273F',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: 30,
   },
-  formContainer: {
+  detailsContainer: {
     width: '80%',
     marginTop: 20,
-  },
-  fieldContainer: {
     marginBottom: 20,
   },
   label: {
@@ -210,17 +243,29 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#195AE6',
   },
+  detailText: {
+    fontSize: 15,
+    marginBottom: 20,
+    color: '#333',
+  },
+  message: {
+    color: 'red',
+    fontSize: 13,
+    marginTop: 5,
+  },
+  formContainer: {
+    width: '80%',
+    marginTop: 20,
+  },
+  fieldContainer: {
+    marginBottom: 20,
+  },
   input: {
     borderBottomWidth: 2,
     borderBottomColor: '#195AE6',
     fontWeight: 'bold',
     fontSize: 15,
     paddingVertical: 5,
-  },
-  message: {
-    color: 'red',
-    fontSize: 13,
-    marginTop: 5,
   },
   bottomContainer: {
     alignItems: 'center',
@@ -249,7 +294,27 @@ const styles = StyleSheet.create({
   logoutText: {
     color: 'white',
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  cancelBtn: {
+    backgroundColor: 'gray',
+  },
 });
 
 export default Account;
-

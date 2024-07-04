@@ -21,7 +21,7 @@ const MyJournals = () => {
     try {      
       const userId = user.id;
       const token = user.token;
-      const response = await axios.get(`${backendUrl}/api/myjournals/${userId}`, {
+      const response = await axios.get(`${backendUrl}/api/journalEntries/myjournals/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
