@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "eats",
-    "slug": "eats",
+    "name": "journal",
+    "slug": "journal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/splash.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.alex.karuiru.app"
+      "package": "com.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

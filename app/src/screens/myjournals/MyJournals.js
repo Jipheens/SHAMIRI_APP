@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, StyleSheet, SafeAreaView, TextInput, Modal } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, StyleSheet, SafeAreaView, TextInput, Modal, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
@@ -28,21 +28,23 @@ const MyJournals = () => {
       });
       setJournalEntries(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('Error Fetching Journal Entries:', error);
     }
   };
 
   const handleSave = async () => {
     try {
       const token = user.token;
+      const entryWithUserId = { ...currentEntry, userId: user.id };
+
       if (currentEntry.id) {
-        await axios.put(`${backendUrl}/api/journalEntries/${currentEntry.id}`, currentEntry, {
+        await axios.put(`${backendUrl}/api/journalEntries/${currentEntry.id}`, entryWithUserId, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
       } else {
-        await axios.post(`${backendUrl}/api/journalEntries`, currentEntry, {
+        await axios.post(`${backendUrl}/api/journalEntries`, entryWithUserId, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -51,7 +53,7 @@ const MyJournals = () => {
       setModalVisible(false);
       fetchData();
     } catch (error) {
-      console.error(error);
+      console.error('Error Saving Journal Entry:', error);
     }
   };
 
@@ -63,6 +65,38 @@ const MyJournals = () => {
   const handleAddNew = () => {
     setCurrentEntry({ title: '', content: '', category: '', date: new Date() });
     setModalVisible(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const token = user.token;
+      await axios.delete(`${backendUrl}/api/journalEntries/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchData();
+    } catch (error) {
+      console.error('Error Deleting Journal Entry:', error);
+    }
+  };
+
+  const confirmDelete = (id) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this journal entry?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: () => handleDelete(id),
+          style: "destructive"
+        }
+      ]
+    );
   };
 
   useEffect(() => {
@@ -79,14 +113,17 @@ const MyJournals = () => {
             <Text style={styles.addButtonText}>Add New Entry</Text>
           </TouchableOpacity>
           {journalEntries.map((entry) => (
-            <TouchableOpacity key={entry.id} style={styles.card} onPress={() => handleEdit(entry)}>
-              <View style={styles.cardContent}>
+            <View key={entry.id} style={styles.card}>
+              <TouchableOpacity style={styles.cardContent} onPress={() => handleEdit(entry)}>
                 <Text style={styles.cardTitle}>{entry.title}</Text>
                 <Text style={styles.cardCategory}>{entry.category}</Text>
                 <Text style={styles.cardDate}>{new Date(entry.date).toLocaleDateString()}</Text>
                 <Text numberOfLines={3}>{entry.content}</Text>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDelete(entry.id)}>
+                <Text style={styles.deleteButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           ))}
         </View>
       </ScrollView>
@@ -160,9 +197,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   cardContent: {
-    padding: 10,
+    flex: 1,
+    marginRight: 10,
   },
   cardTitle: {
     fontSize: 16,
@@ -178,6 +219,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginBottom: 5,
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 8,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontSize: 12,
   },
   modalContent: {
     flex: 1,

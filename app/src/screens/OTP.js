@@ -7,9 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
-
 import { useNavigation } from "@react-navigation/native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const OTP = () => {
@@ -26,7 +24,6 @@ const OTP = () => {
     let updatedCode = code;
 
     if (value === "") {
-      // Allow deleting characters
       updatedCode = updatedCode.slice(0, index);
     } else {
       updatedCode =
@@ -34,7 +31,6 @@ const OTP = () => {
     }
 
     if (index > 0 && value === "") {
-      // Move to the previous box if deleting a value
       switch (index) {
         case 1:
           codeInput1Ref.current.focus();
@@ -52,7 +48,6 @@ const OTP = () => {
           break;
       }
     } else if (index < 4 && value !== "") {
-      // Move to the next box
       switch (index) {
         case 0:
           codeInput2Ref.current.focus();
@@ -71,10 +66,6 @@ const OTP = () => {
       }
     }
     setCode(updatedCode);
-  };
-
-  const handleSubmit = () => {
-    // Handle OTP submission
   };
 
   return (
@@ -101,7 +92,7 @@ const OTP = () => {
         </Text>
 
         <Text style={styles.subtitle}>
-          Enter OTP sent to your email or phone number for verification.
+          Just Click Confirm Since No OTP has been sent to your email.
         </Text>
 
         <View style={styles.otpContainer}>
@@ -148,7 +139,7 @@ const OTP = () => {
 
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <View style={styles.btn}>
             <Text style={styles.btnText}>Confirm</Text>
           </View>

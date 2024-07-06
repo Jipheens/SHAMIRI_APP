@@ -10,14 +10,14 @@ import JournalEntry from '../models/journalEntryModel.js';
  * @access  private
  */
 const createJournalEntry = asyncHandler(async (req, res) => {
-  const { title, content, category, date } = req.body;
+  const { title, content, category, date, userId } = req.body; 
 
   const journalEntry = await JournalEntry.create({
     title,
     content,
     category,
     date,
-    userId: req.user.id,
+    userId, 
   });
 
   res.status(201).json(journalEntry);
@@ -98,7 +98,7 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
 
   const journalEntry = await JournalEntry.findByPk(req.params.id);
 
-  if (journalEntry && journalEntry.userId === req.user.id) {
+  if (journalEntry) {
     journalEntry.title = title || journalEntry.title;
     journalEntry.content = content || journalEntry.content;
     journalEntry.category = category || journalEntry.category;
@@ -121,7 +121,7 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
 const deleteJournalEntry = asyncHandler(async (req, res) => {
   const journalEntry = await JournalEntry.findByPk(req.params.id);
 
-  if (journalEntry && journalEntry.userId === req.user.id) {
+  if (journalEntry) {
     await journalEntry.destroy();
     res.status(204).end();
   } else {
